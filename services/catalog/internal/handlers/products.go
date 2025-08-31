@@ -58,7 +58,7 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 	}
 
 	// Convert to response format
-	var responses []models.ProductResponse
+	responses := make([]models.ProductResponse, 0)
 	for _, product := range products {
 		responses = append(responses, product.ToResponse())
 	}
