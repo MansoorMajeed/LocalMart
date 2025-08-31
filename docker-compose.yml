@@ -1,0 +1,45 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: localmart-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: localmart
+      POSTGRES_USER: catalog_user
+      POSTGRES_PASSWORD: catalog_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  catalog:
+    build:
+      context: ./services/catalog
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: localmart-catalog
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: catalog_user
+      DB_PASSWORD: catalog_password
+      DB_NAME: localmart
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    container_name: localmart-frontend
+    restart: unless-stopped
+    depends_on:
+      - catalog
+
+volumes:
+  postgres_data:
