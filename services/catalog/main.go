@@ -18,14 +18,15 @@ func main() {
 		logger.WithError(err).WithFields(logrus.Fields{
 			"component": "tracing",
 			"action":    "setup",
-		}).Fatal("Failed to initialize tracing")
+		}).Warn("Failed to initialize tracing, continuing without tracing")
+		cleanup = func() {} // no-op cleanup function
+	} else {
+		logger.WithFields(logrus.Fields{
+			"component": "tracing",
+			"action":    "initialize",
+		}).Info("OpenTelemetry tracing initialized")
 	}
 	defer cleanup()
-
-	logger.WithFields(logrus.Fields{
-		"component": "tracing",
-		"action":    "initialize",
-	}).Info("OpenTelemetry tracing initialized")
 
 	// Get database connection
 	database, err := db.Connect()

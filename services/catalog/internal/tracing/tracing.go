@@ -17,6 +17,13 @@ import (
 
 // Setup initializes OpenTelemetry tracing
 func Setup(serviceName string) (func(), error) {
+	// Check if tracing is enabled
+	tracingEnabled := os.Getenv("TRACING_ENABLED")
+	if tracingEnabled == "false" || tracingEnabled == "0" {
+		// Return no-op cleanup function when tracing is disabled
+		return func() {}, nil
+	}
+
 	// Create resource with service information
 	res, err := resource.Merge(
 		resource.Default(),
@@ -43,7 +50,9 @@ func Setup(serviceName string) (func(), error) {
 		otlptracehttp.WithInsecure(), // Lab environment
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create trace exporter: %w", err)
+		// Log the error but don't fail - return no-op cleanup
+		fmt.Printf("Warning: Failed to create trace exporter (tracing will be disabled): %v\n", err)
+		return func() {}, nil
 	}
 
 	// Create trace provider with batch processor
