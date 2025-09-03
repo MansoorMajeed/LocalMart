@@ -1,8 +1,4 @@
-# 🏪 LocalMart - Cloud-Native E-commerce Microservices Platform
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
-[![Microservices](https://img.shields.io/badge/Architecture-Microservices-green.svg)](https://microservices.io/)
+# 🏪 LocalMart - Cloud-Native Demo E-commerce Microservices
 
 LocalMart is a **comprehensive cloud-native e-commerce microservices application** designed as a hands-on learning environment for modern engineers. Built around a relatable e-commerce domain, it demonstrates real-world patterns for containerized service management, observability, and production-ready development practices.
 
@@ -356,6 +352,3 @@ This project is designed for educational purposes. Contributions that enhance th
 - **Authentication**: JWT tokens, session management
 - **Observability**: Tracing, metrics, logging best practices
 - **Development Workflow**: Docker, local development, testing
-
-## 📄 License
-
