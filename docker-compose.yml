@@ -67,6 +67,37 @@ services:
     depends_on:
       - postgres-users
 
+  redis:
+    image: redis:7-alpine
+    container_name: localmart-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  cart:
+    env_file: .env.local
+    build:
+      context: ./services/cart
+      dockerfile: Dockerfile
+    ports:
+      - "${CART_PORT:-8082}:8082"
+    container_name: localmart-cart
+    restart: unless-stopped
+    environment:
+      CART_PORT: 8082
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET_KEY: ${USERS_JWT_SECRET_KEY:-change-this-secret-key-in-production}
+      CATALOG_SERVICE_URL: http://catalog:8080
+      USERS_SERVICE_URL: http://users:8081
+      NODE_ENV: production
+    depends_on:
+      - redis
+      - catalog
+
   frontend:
     env_file: .env.local
     build:
@@ -79,7 +110,9 @@ services:
     depends_on:
       - catalog
       - users
+      - cart
 
 volumes:
   postgres_data:
   postgres_users_data:
+  redis_data:

@@ -1,0 +1,39 @@
+{
+  "name": "cart-service",
+  "version": "1.0.0",
+  "description": "Node.js cart microservice for LocalMart",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "redis": "^4.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "axios": "^1.7.7",
+    "winston": "^3.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "cart",
+    "microservice",
+    "nodejs",
+    "express",
+    "redis",
+    "localmart"
+  ],
+  "author": "LocalMart Team",
+  "license": "MIT"
+}
