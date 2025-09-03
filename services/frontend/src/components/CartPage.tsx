@@ -211,10 +211,7 @@ export default function CartPage() {
                   Continue Shopping
                 </button>
                 <button
-                  onClick={() => {
-                    // TODO: Implement checkout when we have orders service
-                    alert('Checkout functionality coming soon!')
-                  }}
+                  onClick={() => navigate('/checkout')}
                   className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Proceed to Checkout

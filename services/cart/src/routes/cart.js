@@ -4,6 +4,7 @@
 
 const express = require('express')
 const cartService = require('../services/cartService')
+const orderService = require('../services/orderService')
 const { authenticateToken } = require('../middleware/auth')
 const logger = require('../utils/logger')
 
@@ -209,6 +210,57 @@ router.delete('/', authenticateToken, async (req, res) => {
       error: 'Internal server error',
       message: 'Failed to clear cart'
     })
+  }
+})
+
+/**
+ * POST /api/v1/cart/checkout
+ * Process checkout and create order
+ */
+router.post('/checkout', authenticateToken, async (req, res) => {
+  try {
+    const { shippingAddress, paymentMethod } = req.body
+
+    // Validation
+    if (!shippingAddress || shippingAddress.trim().length === 0) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Shipping address is required'
+      })
+    }
+
+    const order = await orderService.checkout(req.user.id, {
+      shippingAddress: shippingAddress.trim(),
+      paymentMethod
+    })
+    
+    res.status(201).json({
+      data: order,
+      message: 'Order created successfully'
+    })
+
+  } catch (error) {
+    logger.error('Error processing checkout', { 
+      userId: req.user.id, 
+      body: req.body,
+      error: error.message 
+    })
+    
+    // Handle business logic errors vs system errors
+    if (error.message.includes('Cart is empty') ||
+        error.message.includes('required') ||
+        error.message.includes('stock') ||
+        error.message.includes('inventory')) {
+      res.status(400).json({
+        error: 'Bad request',
+        message: error.message
+      })
+    } else {
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to process checkout'
+      })
+    }
   }
 })
 

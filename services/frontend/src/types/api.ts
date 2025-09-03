@@ -84,8 +84,49 @@ export interface UpdateCartItemRequest {
   quantity: number
 }
 
+// Order Types
+export interface OrderItem {
+  id: number
+  productId: number
+  productName: string
+  productPrice: number
+  quantity: number
+  subtotal: number
+}
+
+export interface Order {
+  id: number
+  userId: number
+  status: string
+  subtotal: number
+  tax: number
+  shipping: number
+  total: number
+  shippingAddress: string
+  paymentMethod: string
+  createdAt: string
+  updatedAt: string
+  items?: OrderItem[]
+  itemCount?: number
+}
+
+export interface CheckoutRequest {
+  shippingAddress: string
+  paymentMethod?: string
+}
+
+export interface OrdersResponse {
+  data: Order[]
+  pagination: {
+    limit: number
+    offset: number
+    count: number
+  }
+}
+
 // API Endpoint Response Types
 export type ProductsResponse = PaginatedApiResponse<Product>
 export type ProductResponse = ApiResponse<Product>
 export type UserResponse = ApiResponse<User>
-export type CartResponse = ApiResponse<Cart> 
+export type CartResponse = ApiResponse<Cart>
+export type OrderResponse = ApiResponse<Order> 

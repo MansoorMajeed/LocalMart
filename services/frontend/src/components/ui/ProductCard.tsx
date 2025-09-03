@@ -53,9 +53,14 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
             View Details
           </button>
           
-          {isAuthenticated && product.stock_quantity > 0 && (
+          {product.stock_quantity > 0 && (
             <button 
               onClick={async () => {
+                if (!isAuthenticated) {
+                  navigate('/login')
+                  return
+                }
+                
                 try {
                   setIsAddingToCart(true)
                   await addToCart(product.id, 1)
@@ -69,15 +74,6 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isAddingToCart ? 'Adding...' : 'Add to Cart'}
-            </button>
-          )}
-          
-          {!isAuthenticated && (
-            <button 
-              onClick={() => navigate('/login')}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Login to Add to Cart
             </button>
           )}
         </div>

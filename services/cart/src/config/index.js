@@ -17,6 +17,15 @@ const config = {
     keyPrefix: 'cart:'
   },
   
+  // Database config (PostgreSQL - shared with catalog service)
+  db: {
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 5432,
+    user: process.env.DB_USER || 'catalog_user',
+    password: process.env.DB_PASSWORD || 'catalog_password',
+    name: process.env.DB_NAME || 'localmart'
+  },
+  
   // JWT config (shared with users service)
   jwt: {
     secret: process.env.JWT_SECRET_KEY || 'your-secret-key-change-in-production',

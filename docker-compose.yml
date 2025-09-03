@@ -90,12 +90,18 @@ services:
       CART_PORT: 8082
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-catalog_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-catalog_password}
+      DB_NAME: ${POSTGRES_DB:-localmart}
       JWT_SECRET_KEY: ${USERS_JWT_SECRET_KEY:-change-this-secret-key-in-production}
       CATALOG_SERVICE_URL: http://catalog:8080
       USERS_SERVICE_URL: http://users:8081
       NODE_ENV: production
     depends_on:
       - redis
+      - postgres
       - catalog
 
   frontend:

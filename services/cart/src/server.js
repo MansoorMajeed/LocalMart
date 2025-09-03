@@ -12,9 +12,11 @@ const morgan = require('morgan')
 const config = require('./config')
 const logger = require('./utils/logger')
 const redisClient = require('./utils/redis')
+const database = require('./utils/db')
 
 // Import routes
 const cartRoutes = require('./routes/cart')
+const ordersRoutes = require('./routes/orders')
 const healthRoutes = require('./routes/health')
 
 // Create Express app
@@ -63,13 +65,15 @@ app.get('/', (req, res) => {
     docs: '/docs',
     endpoints: {
       health: '/health',
-      cart: '/api/v1/cart'
+      cart: '/api/v1/cart',
+      orders: '/api/v1/orders'
     }
   })
 })
 
 app.use('/health', healthRoutes)
 app.use('/api/v1/cart', cartRoutes)
+app.use('/api/v1/orders', ordersRoutes)
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -104,6 +108,9 @@ const gracefulShutdown = async (signal) => {
     // Close Redis connection
     await redisClient.disconnect()
     
+    // Close database connection
+    await database.disconnect()
+    
     // Close server
     process.exit(0)
   } catch (error) {
@@ -121,6 +128,10 @@ const startServer = async () => {
     // Connect to Redis
     logger.info('Connecting to Redis...')
     await redisClient.connect()
+    
+    // Connect to database
+    logger.info('Connecting to PostgreSQL...')
+    await database.connect()
     
     // Start HTTP server
     const server = app.listen(config.port, '0.0.0.0', () => {

@@ -6,6 +6,9 @@ import { CartProvider } from './contexts/CartContext'
 import ProductList from './components/ProductList'
 import ProductDetail from './components/ProductDetail'
 import CartPage from './components/CartPage'
+import CheckoutPage from './components/CheckoutPage'
+import OrdersPage from './components/OrdersPage'
+import OrderDetailPage from './components/OrderDetailPage'
 import LoginForm from './components/auth/LoginForm'
 import SignupForm from './components/auth/SignupForm'
 import ErrorBoundary from './components/ui/ErrorBoundary'
@@ -33,6 +36,9 @@ function App() {
                 <Route path="/" element={<ProductList />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/orders/:orderId" element={<OrderDetailPage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/signup" element={<SignupForm />} />
               </Routes>
