@@ -11,6 +11,7 @@ import time
 from .api import auth, users, health, metrics
 from .api.metrics import request_count, request_duration
 from .core.config import settings
+from .core.init_db import init_database
 
 # Configure structured logging
 structlog.configure(
@@ -41,6 +42,14 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+# Initialize database on startup
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on application startup"""
+    logger.info("Initializing database...")
+    await init_database()
+    logger.info("Database initialization completed")
 
 # CORS middleware for frontend integration
 app.add_middleware(
