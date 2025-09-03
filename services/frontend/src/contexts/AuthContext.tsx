@@ -32,21 +32,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Initialize auth state on app load
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        // Check if we have a stored token
-        if (authApi.isAuthenticated()) {
-          // Try to get current user data
-          const userData = await authApi.getCurrentUser()
-          setUser(userData)
-        }
-      } catch (error) {
-        // Token might be expired, clear it
+    const initializeAuth = () => {
+      console.log('🔄 Initializing auth...')
+      
+      // Check if we have a stored token and user
+      const hasToken = authApi.isAuthenticated()
+      const storedUser = authApi.getStoredUser()
+      
+      console.log('🔑 Has token:', hasToken)
+      console.log('👤 Stored user:', storedUser)
+      
+      if (hasToken && storedUser) {
+        console.log('✅ Restoring user from storage')
+        setUser(storedUser)
+      } else {
+        console.log('❌ No valid auth data found')
         authApi.logout()
         setUser(null)
-      } finally {
-        setIsLoading(false)
       }
+      
+      setIsLoading(false)
+      console.log('✅ Auth initialization complete')
     }
 
     initializeAuth()
