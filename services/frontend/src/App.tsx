@@ -2,8 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthProvider } from './contexts/AuthContext'
+import { CartProvider } from './contexts/CartContext'
 import ProductList from './components/ProductList'
 import ProductDetail from './components/ProductDetail'
+import CartPage from './components/CartPage'
 import LoginForm from './components/auth/LoginForm'
 import SignupForm from './components/auth/SignupForm'
 import ErrorBoundary from './components/ui/ErrorBoundary'
@@ -25,16 +27,19 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<ProductList />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/signup" element={<SignupForm />} />
-            </Routes>
-          </Router>
-          {/* React Query DevTools - only shows in development */}
-          <ReactQueryDevtools initialIsOpen={false} />
+          <CartProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<ProductList />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/signup" element={<SignupForm />} />
+              </Routes>
+            </Router>
+            {/* React Query DevTools - only shows in development */}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </CartProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>

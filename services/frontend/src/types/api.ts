@@ -54,7 +54,38 @@ export interface UserUpdateRequest {
   email?: string
 }
 
+// Cart Types - matching Node.js cart service
+export interface CartItem {
+  productId: number
+  quantity: number
+  addedAt: string
+  product: {
+    id: number
+    name: string
+    description: string
+    price: number
+    stock_quantity: number
+  }
+  subtotal: number
+}
+
+export interface Cart {
+  items: CartItem[]
+  total: number
+  itemCount: number
+}
+
+export interface AddToCartRequest {
+  productId: number
+  quantity: number
+}
+
+export interface UpdateCartItemRequest {
+  quantity: number
+}
+
 // API Endpoint Response Types
 export type ProductsResponse = PaginatedApiResponse<Product>
 export type ProductResponse = ApiResponse<Product>
-export type UserResponse = ApiResponse<User> 
+export type UserResponse = ApiResponse<User>
+export type CartResponse = ApiResponse<Cart> 

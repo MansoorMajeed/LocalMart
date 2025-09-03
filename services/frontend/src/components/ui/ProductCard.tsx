@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Product } from '../../types/api'
+import { useAuth } from '../../contexts/AuthContext'
+import { useCart } from '../../contexts/CartContext'
 
 interface ProductCardProps {
   product: Product
@@ -8,6 +11,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, className = '' }: ProductCardProps) {
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  const { addToCart } = useCart()
+  const [isAddingToCart, setIsAddingToCart] = useState(false)
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow ${className}`}>
@@ -39,12 +45,42 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
             </span>
           </div>
         </div>
-        <button 
-          onClick={() => navigate(`/product/${product.id}`)}
-          className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-        >
-          View Details
-        </button>
+        <div className="mt-4 space-y-2">
+          <button 
+            onClick={() => navigate(`/product/${product.id}`)}
+            className="w-full bg-gray-100 text-gray-900 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors"
+          >
+            View Details
+          </button>
+          
+          {isAuthenticated && product.stock_quantity > 0 && (
+            <button 
+              onClick={async () => {
+                try {
+                  setIsAddingToCart(true)
+                  await addToCart(product.id, 1)
+                } catch (error) {
+                  console.error('Failed to add to cart:', error)
+                } finally {
+                  setIsAddingToCart(false)
+                }
+              }}
+              disabled={isAddingToCart}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+            </button>
+          )}
+          
+          {!isAuthenticated && (
+            <button 
+              onClick={() => navigate('/login')}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Login to Add to Cart
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
