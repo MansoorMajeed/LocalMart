@@ -14,6 +14,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  postgres-users:
+    env_file: .env.local
+    image: postgres:15-alpine
+    container_name: localmart-postgres-users
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${USERS_POSTGRES_DB:-localmart_users}
+      POSTGRES_USER: ${USERS_POSTGRES_USER:-users_user}
+      POSTGRES_PASSWORD: ${USERS_POSTGRES_PASSWORD:-users_password}
+    ports:
+      - "${USERS_POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_users_data:/var/lib/postgresql/data
+
   catalog:
     env_file: .env.local
     build:
@@ -34,6 +48,25 @@ services:
     depends_on:
       - postgres
 
+  users:
+    env_file: .env.local
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    ports:
+      - "${USERS_PORT:-8081}:8081"
+    container_name: localmart-users
+    restart: unless-stopped
+    environment:
+      USERS_DB_HOST: postgres-users
+      USERS_DB_PORT: 5432
+      USERS_DB_USER: ${USERS_POSTGRES_USER:-users_user}
+      USERS_DB_PASSWORD: ${USERS_POSTGRES_PASSWORD:-users_password}
+      USERS_DB_NAME: ${USERS_POSTGRES_DB:-localmart_users}
+      USERS_JWT_SECRET_KEY: ${USERS_JWT_SECRET_KEY:-change-this-secret-key-in-production}
+    depends_on:
+      - postgres-users
+
   frontend:
     env_file: .env.local
     build:
@@ -45,6 +78,8 @@ services:
     restart: unless-stopped
     depends_on:
       - catalog
+      - users
 
 volumes:
   postgres_data:
+  postgres_users_data:
